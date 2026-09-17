@@ -1,0 +1,17 @@
+README.md
+pyproject.toml
+src/edc16c39/__init__.py
+src/edc16c39/binary.py
+src/edc16c39/checksum.py
+src/edc16c39/diff.py
+src/edc16c39/export.py
+src/edc16c39/identification.py
+src/edc16c39/maps.py
+src/edc16c39_editor.egg-info/PKG-INFO
+src/edc16c39_editor.egg-info/SOURCES.txt
+src/edc16c39_editor.egg-info/dependency_links.txt
+src/edc16c39_editor.egg-info/requires.txt
+src/edc16c39_editor.egg-info/top_level.txt
+src/ui/__init__.py
+tests/test_binary.py
+tests/test_project.py
