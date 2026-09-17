@@ -35,8 +35,29 @@ def test_map_dimensions_are_positive_integers() -> None:
         assert isinstance(item["columns"], int) and item["columns"] > 0
 
 
-def test_all_entries_remain_unvalidated_user_provided_definitions() -> None:
-    """No entry asserts validation beyond the supplied definition list."""
+def test_only_map_18_is_validated() -> None:
+    """Map 18 is the sole experimentally validated definition so far."""
     for item in load_maps():
         assert item["source"] == "EDCMasterHP user-provided definition"
-        assert item["validated"] is False
+        assert item["validated"] is (item["id"] == 18)
+
+
+def test_map_18_has_the_validated_raw_format() -> None:
+    """The experimentally verified Torque Limiter format remains explicit."""
+    map_18 = next(item for item in load_maps() if item["id"] == 18)
+
+    assert map_18 == {
+        "id": 18,
+        "address": "0x1C6960",
+        "rows": 25,
+        "columns": 1,
+        "name": "Torque Limiter",
+        "category": "Torque Limiter",
+        "source": "EDCMasterHP user-provided definition",
+        "validated": True,
+        "data_type": "uint16",
+        "endian": "big",
+        "factor": 0.1,
+        "offset": 0,
+        "unit": "Nm",
+    }

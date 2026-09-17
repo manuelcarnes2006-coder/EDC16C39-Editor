@@ -13,6 +13,7 @@ __pycache__/
 # Archivos temporales
 *.tmp
 *.log
+pytest-tmp-*/
 
 # Configuración local de VS Code
 .vscode/
