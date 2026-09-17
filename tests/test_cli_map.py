@@ -17,8 +17,10 @@ def test_map_command_reads_a_definition_as_provisional_raw_uint16(tmp_path, caps
 
     captured = capsys.readouterr()
     assert result == 0
-    assert "Interpretacion RAW provisional: uint16 little-endian" in captured.out
-    assert "Mapa 1: Driver's Wish" in captured.out
+    assert "Formato: RAW provisional (NO VALIDADO)" in captured.out
+    assert "Data type: uint16" in captured.out
+    assert "Endian: little" in captured.out
+    assert "Nombre: Driver's Wish" in captured.out
     assert "Dimensiones: 16 x 16" in captured.out
     assert "1 65535" in captured.out
     assert hashlib.sha256(binary_path.read_bytes()).hexdigest() == before_hash
@@ -40,11 +42,46 @@ def test_validated_map_uses_its_definition_format_scale_offset_and_unit(tmp_path
 
     captured = capsys.readouterr()
     assert result == 0
-    assert "Formato VALIDADO: uint16 big-endian" in captured.out
+    assert "ID: 18" in captured.out
+    assert "Nombre: Torque Limiter" in captured.out
+    assert "Categoria: Torque Limiter" in captured.out
+    assert "Direccion: 0x1C6960" in captured.out
+    assert "Dimensiones: 25 x 1" in captured.out
+    assert "Formato: VALIDADO" in captured.out
+    assert "Data type: uint16" in captured.out
+    assert "Endian: big" in captured.out
     assert "Factor: 0.1" in captured.out
     assert "Offset: 0" in captured.out
     assert "Unidad: Nm" in captured.out
-    assert captured.out.split("Datos:\n", maxsplit=1)[1].splitlines() == [str(value) for value in expected_values]
+    assert "Indice | Valor" in captured.out
+    assert captured.out.split("-------+------\n", maxsplit=1)[1].splitlines() == [
+        f"{index:<6} | {value}" for index, value in enumerate(expected_values)
+    ]
+
+
+def test_map_19_uses_the_same_validated_structured_display(tmp_path, capsys) -> None:
+    binary_path = tmp_path / "sample.bin"
+    expected_values = [10, 20] + [0] * 23
+    contents = bytearray(0x1C6A92 + 25 * 2)
+    contents[0x1C6A92:0x1C6A92 + 25 * 2] = b"".join(
+        (value * 10).to_bytes(2, "big") for value in expected_values
+    )
+    binary_path.write_bytes(contents)
+
+    result = main(["--map", "19", str(binary_path)])
+
+    captured = capsys.readouterr()
+    assert result == 0
+    assert "ID: 19" in captured.out
+    assert "Direccion: 0x1C6A92" in captured.out
+    assert "Formato: VALIDADO" in captured.out
+    assert "Data type: uint16" in captured.out
+    assert "Endian: big" in captured.out
+    assert "Factor: 0.1" in captured.out
+    assert "Offset: 0" in captured.out
+    assert "Unidad: Nm" in captured.out
+    assert "0      | 10" in captured.out
+    assert "1      | 20" in captured.out
 
 
 def test_map_reader_applies_validated_factor_and_offset(tmp_path) -> None:

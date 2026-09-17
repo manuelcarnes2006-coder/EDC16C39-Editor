@@ -11,6 +11,47 @@ from . import MapReader, compare_binaries, load_map_definition, read_binary
 MAPS_PATH = Path(__file__).resolve().parents[2] / "definitions" / "edc16c39" / "0281015984" / "1037516790" / "maps.json"
 
 
+def _format_value(value: int | float) -> str:
+    """Format numeric map values without adding unvalidated precision."""
+    return f"{value:g}" if isinstance(value, float) else str(value)
+
+
+def _print_map(map_data) -> None:
+    """Print a read-only, structured representation of extracted map data."""
+    definition = map_data.definition
+    print(f"ID: {definition.id}")
+    print(f"Nombre: {definition.name}")
+    print(f"Categoria: {definition.category}")
+    print(f"Direccion: 0x{definition.address:X}")
+    print(f"Dimensiones: {definition.rows} x {definition.columns}")
+
+    if map_data.validated:
+        print("Formato: VALIDADO")
+        print(f"Data type: {map_data.data_type}")
+        print(f"Endian: {map_data.endian}")
+        print(f"Factor: {map_data.factor:g}")
+        print(f"Offset: {map_data.offset:g}")
+        print(f"Unidad: {map_data.unit}")
+    else:
+        print("Formato: RAW provisional (NO VALIDADO)")
+        print(f"Data type: {map_data.data_type}")
+        print(f"Endian: {map_data.endian}")
+        print("Factor: no validado")
+        print("Offset: no validado")
+        print("Unidad: no validada")
+
+    if definition.columns == 1:
+        print("\nIndice | Valor")
+        print("-------+------")
+        for index, row in enumerate(map_data.values):
+            print(f"{index:<6} | {_format_value(row[0])}")
+        return
+
+    print("\nDatos:")
+    for row in map_data.values:
+        print(" ".join(_format_value(value) for value in row))
+
+
 def main(arguments: list[str] | None = None) -> int:
     """Print BIN metadata, compare BINs, or read a map without modifying a BIN."""
     arguments = sys.argv[1:] if arguments is None else arguments
@@ -37,20 +78,7 @@ def main(arguments: list[str] | None = None) -> int:
             binary = read_binary(arguments[2])
             definition = load_map_definition(MAPS_PATH, map_id)
             map_data = MapReader(binary).read(definition, data_type="uint16", endian="little")
-            if map_data.validated:
-                print(f"Formato VALIDADO: {map_data.data_type} {map_data.endian}-endian")
-                print(f"Factor: {map_data.factor:g}")
-                print(f"Offset: {map_data.offset:g}")
-                print(f"Unidad: {map_data.unit}")
-            else:
-                print("Interpretacion RAW provisional: uint16 little-endian (escalas y formato sin validar).")
-            print(f"Mapa {definition.id}: {definition.name}")
-            print(f"Categoria: {definition.category}")
-            print(f"Direccion: 0x{definition.address:X}")
-            print(f"Dimensiones: {definition.rows} x {definition.columns}")
-            print("Datos:")
-            for row in map_data.values:
-                print(" ".join(f"{value:g}" if isinstance(value, float) else str(value) for value in row))
+            _print_map(map_data)
             return 0
         binary = read_binary(arguments[0])
     except (FileNotFoundError, ValueError, OSError) as error:
