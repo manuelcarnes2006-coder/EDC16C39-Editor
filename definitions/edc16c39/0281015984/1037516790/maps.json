@@ -17,7 +17,7 @@
   {"id": 16, "address": "0x1BA8F6", "rows": 2, "columns": 1, "name": "Map Sensor", "category": "Map Sensor", "source": "EDCMasterHP user-provided definition", "validated": false},
   {"id": 17, "address": "0x1C6888", "rows": 1, "columns": 1, "name": "SVRL", "category": "SVRL", "source": "EDCMasterHP user-provided definition", "validated": false},
   {"id": 18, "address": "0x1C6960", "rows": 25, "columns": 1, "name": "Torque Limiter", "category": "Torque Limiter", "source": "EDCMasterHP user-provided definition", "validated": true, "data_type": "uint16", "endian": "big", "factor": 0.1, "offset": 0, "unit": "Nm"},
-  {"id": 19, "address": "0x1C6A92", "rows": 25, "columns": 1, "name": "Torque Limiter", "category": "Torque Limiter", "source": "EDCMasterHP user-provided definition", "validated": false},
+  {"id": 19, "address": "0x1C6A92", "rows": 25, "columns": 1, "name": "Torque Limiter", "category": "Torque Limiter", "source": "EDCMasterHP user-provided definition", "validated": true, "data_type": "uint16", "endian": "big", "factor": 0.1, "offset": 0, "unit": "Nm"},
   {"id": 20, "address": "0x1C6CD4", "rows": 8, "columns": 8, "name": "IQ Limit by Coolant Temp.", "category": "IQ Limiter", "source": "EDCMasterHP user-provided definition", "validated": false},
   {"id": 21, "address": "0x1C892A", "rows": 16, "columns": 16, "name": "Lambda calculations", "category": "Lambda", "source": "EDCMasterHP user-provided definition", "validated": false},
   {"id": 22, "address": "0x1C8B6E", "rows": 16, "columns": 16, "name": "Lambda calculations", "category": "Lambda", "source": "EDCMasterHP user-provided definition", "validated": false},
